@@ -1,0 +1,33 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+      - production
+  pull_request:
+    branches:
+      - main
+      - production
+
+jobs:
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Récupérer le code
+        uses: actions/checkout@v3
+
+      - name: Installer Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Installer les dépendances
+        run: pip install -r m5/backend/requirements.txt
+
+      - name: Lancer les tests
+        run: pytest m5/backend/tests/ -v
+        env:
+          PYTHONPATH: m5/backend

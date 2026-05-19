@@ -1,0 +1,62 @@
+# Nom du workflow
+name: Tests et Déploiement
+
+on:
+  # Se déclenche sur chaque push sur main et production
+  push:
+    branches:
+      - main
+      - production
+  # Se déclenche sur chaque Pull Request vers production
+  pull_request:
+    branches:
+      - production
+
+jobs:
+
+  # ─────────────────────────────────────────
+  # JOB 1 : Toujours lancer les tests
+  # Se déclenche sur main ET production
+  # ─────────────────────────────────────────
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Récupérer le code
+        uses: actions/checkout@v3
+
+      - name: Installer Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Installer les dépendances
+        run: pip install -r m5/backend/requirements.txt
+
+      # Si ce job échoue, le job deploy ne se lance pas
+      - name: Lancer les tests
+        run: pytest m5/backend/tests/ -v
+        env:
+          PYTHONPATH: m5/backend
+
+  # ─────────────────────────────────────────
+  # JOB 2 : Déployer uniquement sur production
+  # Ne se déclenche JAMAIS sur main
+  # ─────────────────────────────────────────
+  deploy:
+    needs: tests
+    runs-on: ubuntu-latest
+
+    # Condition : ce job tourne seulement si on est sur la branche production
+    if: github.ref == 'refs/heads/production'
+
+    steps:
+
+      - name: Récupérer le code
+        uses: actions/checkout@v3
+
+      - name: Construire les images Docker
+        run: docker-compose -f m5/docker-compose.yml build
+
+      # - name: Déployer sur le serveur
+      #   run: ssh user@ton-serveur "cd /app && docker-compose up -d"
