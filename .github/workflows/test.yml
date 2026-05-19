@@ -10,6 +10,7 @@ on:
   # Se déclenche sur chaque Pull Request vers production
   pull_request:
     branches:
+      - main
       - production
 
 jobs:
