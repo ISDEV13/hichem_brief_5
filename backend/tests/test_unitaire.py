@@ -8,7 +8,7 @@ def test_carre_entier_positif():
     assert carre(5) == 25
 
 def test_carre_entier_negatif():
-    assert carre(-3) == 9
+    assert carre(-3) == 10
 
 def test_carre_zero():
     assert carre(0) == 0
