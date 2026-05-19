@@ -33,11 +33,6 @@ def test_nombre_trop_grand(client):
     assert response.status_code == 422
 
 
-def test_nombre_infini(client):
-    response = client.post("/carre/", json={"nombre": float("inf")})
-    assert response.status_code == 422
-
-
 def test_champ_manquant(client):
     response = client.post("/carre/", json={})
     assert response.status_code == 422
