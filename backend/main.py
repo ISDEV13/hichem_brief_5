@@ -2,8 +2,10 @@ import math
 from fastapi import FastAPI
 from pydantic import BaseModel, field_validator
 from modules.calcul import carre
+from prometheus_fastapi_instrumentator import Instrumentator
 
 app = FastAPI()
+Instrumentator().instrument(app).expose(app)
 
 
 class NombreInput(BaseModel):
