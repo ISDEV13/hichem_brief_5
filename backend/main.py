@@ -21,6 +21,11 @@ class NombreInput(BaseModel):
         return v
 
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+
 @app.post("/carre/")
 def get_carre(data: NombreInput):
     return {"nombre": data.nombre, "carre": carre(data.nombre)}
