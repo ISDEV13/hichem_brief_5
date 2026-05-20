@@ -2,8 +2,10 @@ import math
 from fastapi import FastAPI
 from pydantic import BaseModel, field_validator
 from modules.calcul import carre
+from prometheus_fastapi_instrumentator import Instrumentator
 
 app = FastAPI()
+Instrumentator().instrument(app).expose(app)
 
 
 class NombreInput(BaseModel):
@@ -17,6 +19,11 @@ class NombreInput(BaseModel):
         if v < -1_000_000 or v > 1_000_000:
             raise ValueError("Le nombre doit être compris entre -1 000 000 et 1 000 000")
         return v
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
 
 
 @app.post("/carre/")
